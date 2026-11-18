@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mystical Adventure of Broken Love</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #090d20;
+    color: white;
+    font-family: Georgia, serif;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+h1 {
+    color: #e9c7ff;
+    padding: 20px 10px 8px;
+    text-shadow: 0 0 15px #bd69ff;
+}
+
+.subtitle {
+    color: #c8b8dc;
+    margin-bottom: 15px;
+}
+
+#startScreen, #endScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: radial-gradient(circle, #34234e, #080b1c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#startScreen h2, #endScreen h2 {
+    font-size: 32px;
+    color: #ffc9ed;
+    margin-bottom: 15px;
+}
+
+input {
+    padding: 13px;
+    border-radius: 10px;
+    border: 2px solid #bd8aff;
+    background: #17152c;
+    color: white;
+    font-size: 17px;
+    text-align: center;
+    margin: 15px;
+    width: min(280px, 85vw);
+}
+
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #a34be8, #e35dba);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .3s;
+    margin: 8px;
+}
+
+button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px #e58cff;
+}
+
+#game {
+    width: min(95vw, 950px);
+    height: min(65vh, 550px);
+    min-height: 350px;
+    margin: 15px auto;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid #a878cc;
+    border-radius: 15px;
+    background: linear-gradient(#101b3c 0%, #34345e 55%, #183d32 56%, #10291e 100%);
+}
+
+#scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#status {
+    color: #f4d7ff;
+    font-size: 18px;
+    padding: 10px;
+}
+
+#player {
+    position: absolute;
+    z-index: 3;
+    width: 38px;
+    height: 65px;
+    left: 45px;
+    top: 280px;
+    transition: none;
+    font-size: 35px;
+    text-align: center;
+    filter: drop-shadow(0 0 8px #ffe1ff);
+}
+
+#player .body {
+    display: block;
+    font-size: 38px;
+}
+
+#cave {
+    position: absolute;
+    z-index: 2;
+    right: 45px;
+    bottom: 65px;
+    width: 190px;
+    height: 230px;
+    cursor: pointer;
+}
+
+.cave-rock {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 170px;
+    height: 205px;
+    background: linear-gradient(120deg, #55516b, #211c32 70%);
+    border-radius: 85px 85px 20px 20px;
+    box-shadow: inset 0 0 25px #9990a5, 0 0 25px #8c69bd;
+}
+
+.cave-head {
+    position: absolute;
+    width: 85px;
+    height: 90px;
+    background: #514b65;
+    border-radius: 50%;
+    top: -40px;
+    left: 52px;
+    border: 4px solid #77718c;
+}
+
+.cave-body {
+    position: absolute;
+    width: 130px;
+    height: 150px;
+    background: #48445d;
+    border-radius: 65px 65px 20px 20px;
+    top: 55px;
+    left: 30px;
+}
+
+.hollow-heart {
+    position: absolute;
+    top: 92px;
+    left: 70px;
+    width: 55px;
+    height: 55px;
+    background: #080b18;
+    border: 3px solid #a85bcb;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #d18aff;
+}
+
+.cave-label {
+    position: absolute;
+    bottom: -25px;
+    width: 100%;
+    font-size: 14px;
+    color: #ffdbff;
+    text-shadow: 0 0 10px purple;
+}
+
+.tree {
+    position: absolute;
+    bottom: 75px;
+    font-size: 60px;
+    z-index: 1;
+    filter: drop-shadow(0 0 5px #07150d);
+}
+
+#controls {
+    margin: 12px;
+}
+
+#controls button {
+    min-width: 55px;
+}
+
+#story {
+    max-width: 850px;
+    margin: 12px auto;
+    padding: 15px;
+    color: #e4d5ff;
+    line-height: 1.6;
+    background: #17132b;
+    border-radius: 12px;
+}
+
+.star {
+    position: absolute;
+    color: #fff3c9;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: .2; transform: scale(.7); }
+    to { opacity: 1; transform: scale(1.3); }
+}
+
+#endScreen {
+    display: none;
+}
+
+#endScreen p {
+    max-width: 500px;
+    line-height: 1.7;
+    margin: 15px;
+    color: #e7d6ff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌙 The Mystical Adventure of Broken Love 💜</h1>
+<p class="subtitle">A journey through the forest of forgotten hearts...</p>
+
+<div id="startScreen">
+    <h2>💔 The Lost Heart 💔</h2>
+    <p>Enter your adventurer's name to begin your journey.</p>
+    <input id="nameInput" placeholder="Enter your character's name">
+    <button onclick="startGame()">Begin Adventure ✨</button>
+    <p style="margin-top:20px;color:#c9a9df">
+        Somewhere in the enchanted forest, a broken heart waits to be found...
+    </p>
+</div>
+
+<div id="game">
+
+    <canvas id="scene"></canvas>
+
+    <div class="tree" style="left:5%">🌲</div>
+    <div class="tree" style="left:22%">🌳</div>
+    <div class="tree" style="left:65%">🌲</div>
+    <div class="tree" style="left:85%">🌳</div>
+
+    <div id="player">
+        <span class="body">🧙</span>
+    </div>
+
+    <div id="cave" onclick="tryEnterCave()">
+        <div class="cave-rock"></div>
+        <div class="cave-head"></div>
+        <div class="cave-body"></div>
+        <div class="hollow-heart"></div>
+        <div class="cave-label">THE HOLLOW-HEART CAVE</div>
+    </div>
+
+</div>
+
+<div id="status">Waiting for an adventurer...</div>
+
+<div id="story">
+    <span id="storyText">
+        A forgotten forest holds a mysterious secret.
+        Will you discover the heart hidden within?
+    </span>
+</div>
+
+<div id="controls">
+    <button onclick="move(0,-1)">⬆️</button><br>
+    <button onclick="move(-1,0)">⬅️</button>
+    <button onclick="move(0,1)">⬇️</button>
+    <button onclick="move(1,0)">➡️</button>
+</div>
+
+<p style="color:#b6a5c8">
+    Use Arrow Keys or WASD to move. Reach the hollow heart!
+</p>
+
+<div id="endScreen">
+    <h2 id="endingTitle">✨ Adventure Complete ✨</h2>
+    <p id="endingMessage"></p>
+    <button onclick="restartGame()">🔄 Play Again</button>
+</div>
+
+<script>
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const cave = document.getElementById("cave");
+const storyText = document.getElementById("storyText");
+const statusText = document.getElementById("status");
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+
+let x = 45;
+let y = 280;
+let characterName = "Adventurer";
+let running = false;
+let timeLeft = 20;
+let timer;
+let frame = 0;
+
+function resizeCanvas() {
+    canvas.width = game.clientWidth;
+    canvas.height = game.clientHeight;
+    drawBackground();
+}
+
+function drawBackground() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Mountains
+    ctx.fillStyle = "#242844";
+    ctx.beginPath();
+    ctx.moveTo(0, 180);
+    ctx.lineTo(150, 35);
+    ctx.lineTo(290, 180);
+    ctx.lineTo(440, 50);
+    ctx.lineTo(600, 180);
+    ctx.lineTo(canvas.width, 40);
+    ctx.lineTo(canvas.width, 250);
+    ctx.lineTo(0, 250);
+    ctx.fill();
+
+    // Moon
+    ctx.fillStyle = "#f5e7ca";
+    ctx.beginPath();
+    ctx.arc(canvas.width - 100, 75, 32, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#26304a";
+    ctx.beginPath();
+    ctx.arc(canvas.width - 85, 65, 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Grass
+    ctx.fillStyle = "#173c2b";
+    ctx.fillRect(0, 300, canvas.width, canvas.height - 300);
+
+    // Glowing stars
+    for (let i = 0; i < 55; i++) {
+        let sx = (i * 137) % canvas.width;
+        let sy = (i * 71) % 220;
+        ctx.fillStyle = i % 2 ? "#d6c9ff" : "#ffe9bd";
+        ctx.globalAlpha = 0.4 + Math.abs(Math.sin(frame / 20 + i)) * 0.6;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Magical glowing flowers
+    for (let i = 0; i < 16; i++) {
+        let fx = i * (canvas.width / 16) + 15;
+        let fy = 340 + (i % 3) * 30;
+        ctx.fillStyle = "#df93ff";
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = "#ca72ff";
+        ctx.beginPath();
+        ctx.arc(fx, fy, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+}
+
+function update() {
+    if (!running) return;
+
+    frame++;
+    drawBackground();
+
+    // Floating magical particles
+    ctx.fillStyle = "#e8b5ff";
+    for (let i = 0; i < 20; i++) {
+        let px = (i * 47 + frame * 0.5) % canvas.width;
+        let py = 250 + Math.sin(frame / 15 + i) * 65;
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(px, py, 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(update);
+}
+
+function startGame() {
+    characterName =
+        document.getElementById("nameInput").value.trim() || "Adventurer";
+
+    document.getElementById("startScreen").style.display = "none";
+
+    running = true;
+    x = 45;
+    y = Math.max(20, game.clientHeight - 115);
+    timeLeft = 90;
+
+    updatePlayer();
+
+    statusText.innerHTML =
+        "✨ " + characterName + " | Time remaining: " + timeLeft + " seconds";
+
+    storyText.innerHTML =
+        "Welcome, " + characterName +
+        "! You have entered the enchanted forest. " +
+        "Find the mysterious cave shaped like a heartbroken man. " +
+        "His lost heart is waiting inside...";
+
+    resizeCanvas();
+    update();
+
+    clearInterval(timer);
+
+    timer = setInterval(() => {
+        if (!running) return;
+
+        timeLeft--;
+
+        statusText.innerHTML =
+            "✨ " + characterName + " | Time remaining: " + timeLeft + " seconds";
+
+        if (timeLeft <= 0) {
+            gameOver();
+        }
+    }, 1000);
+}
+
+function updatePlayer() {
+    player.style.left = x + "px";
+    player.style.top = y + "px";
+}
+
+function move(dx, dy) {
+    if (!running) return;
+
+    const maxX = game.clientWidth - 40;
+    const maxY = game.clientHeight - 75;
+
+    x += dx * 18;
+    y += dy * 18;
+
+    x = Math.max(0, Math.min(x, maxX));
+    y = Math.max(0, Math.min(y, maxY));
+
+    updatePlayer();
+
+    checkCave();
+}
+
+document.addEventListener("keydown", function(e) {
+    if (!running) return;
+
+    const key = e.key.toLowerCase();
+
+    if (["arrowup", "arrowdown", "arrowleft", "arrowright",
+         "w", "a", "s", "d"].includes(key)) {
+        e.preventDefault();
+    }
+
+    if (key === "arrowup" || key === "w") move(0, -1);
+    if (key === "arrowdown" || key === "s") move(0, 1);
+    if (key === "arrowleft" || key === "a") move(-1, 0);
+    if (key === "arrowright" || key === "d") move(1, 0);
+});
+
+function checkCave() {
+    const playerRect = player.getBoundingClientRect();
+    const caveRect = cave.getBoundingClientRect();
+
+    const distance = Math.hypot(
+        (playerRect.left + 19) - (caveRect.left + 95),
+        (playerRect.top + 32) - (caveRect.top + 115)
+    );
+
+    if (distance < 115) {
+        storyText.innerHTML =
+            "A mysterious whisper echoes through the trees... " +
+            "The hollow-hearted man calls your name. " +
+            "Press ENTER or click the cave to enter!";
+    } else {
+        storyText.innerHTML =
+            "Keep exploring, " + characterName +
+            ". The mysterious hollow-heart cave awaits...";
+    }
+}
+
+function tryEnterCave() {
+    if (!running) return;
+
+    const playerRect = player.getBoundingClientRect();
+    const caveRect = cave.getBoundingClientRect();
+
+    const distance = Math.hypot(
+        (playerRect.left + 19) - (caveRect.left + 95),
+        (playerRect.top + 32) - (caveRect.top + 115)
+    );
+
+    if (distance > 125) {
+        storyText.innerHTML =
+            "You must walk closer to the cave before entering!";
+        return;
+    }
+
+    winGame();
+}
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && running) {
+        tryEnterCave();
+    }
+});
+
+function winGame() {
+    running = false;
+    clearInterval(timer);
+
+    document.getElementById("endScreen").style.display = "flex";
+
+    document.getElementById("endingTitle").innerHTML =
+        "💖 YOU FOUND THE LOST HEART! 💖";
+
+    document.getElementById("endingMessage").innerHTML =
+        "Congratulations, " + characterName + "!<br><br>" +
+        "Inside the mysterious cave, you discover a glowing heart " +
+        "hidden within the chest of the broken man.<br><br>" +
+        "As you touch it, the forest begins to shine. " +
+        "The man's heart is finally restored, and the curse of " +
+        "broken love is lifted.<br><br>" +
+        "You have completed your mystical adventure! 🌹✨";
+}
+
+function gameOver() {
+    running = false;
+    clearInterval(timer);
+
+    document.getElementById("endScreen").style.display = "flex";
+
+    document.getElementById("endingTitle").innerHTML =
+        "💔 GAME OVER 💔";
+
+    document.getElementById("endingMessage").innerHTML =
+        characterName + ", the forest has fallen silent...<br><br>" +
+        "The lost heart remains hidden inside the mysterious cave. " +
+        "You failed to enter it before time ran out.<br><br>" +
+        "The broken man's heart continues to wait in darkness. " +
+        "Perhaps another adventure will change his fate...";
+}
+
+function restartGame() {
+    clearInterval(timer);
+    running = false;
+
+    document.getElementById("endScreen").style.display = "none";
+    document.getElementById("startScreen").style.display = "flex";
+
+    document.getElementById("nameInput").value = characterName;
+    storyText.innerHTML = "A new adventure is waiting...";
+    statusText.innerHTML = "Waiting for an adventurer...";
+
+    x = 45;
+    y = Math.max(20, game.clientHeight - 115);
+    updatePlayer();
+}
+
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+updatePlayer();
+</script>
+
+</body>
+</html>
